@@ -1,10 +1,18 @@
 import './App.css'
+import {Routes, Route} from 'react-router'
+import LandingPage from './components/pages/landing/LandingPage'
+import Dashboard from './components/pages/dashboard/Dashboard'
+import Header from './components/elements/Header'
 
 function App() {
 
   return (
     <>
-      <h1  className="text-3xl text-red-500 font-bold underline">Expense Tracker</h1>
+     <Header />
+     <Routes>
+      <Route path='/' element={<LandingPage />} />
+      <Route path='/dashboard' element={<Dashboard/>} />
+     </Routes>
     </>
   )
 }
