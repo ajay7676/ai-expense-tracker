@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 dotenv.config();
 
 export const registerUser = async (req, res) => {
-    console.log("API is working ")
+  console.log("API is working ");
   try {
     const { firstName, lastName, email, password } = req.body;
 
@@ -39,7 +39,7 @@ export const registerUser = async (req, res) => {
 
     console.log(process.env.JWT_SECRET);
     // create token
-    const token = jwt.sign({ id: newUser._id },  process.env.JWT_SECRET, {
+    const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1d",
     });
     res.status(201).json({
@@ -49,25 +49,34 @@ export const registerUser = async (req, res) => {
       data: newUser,
     });
   } catch (error) {
-    console.log("Error is  coming")
+    console.log("Error is  coming");
     res.status(500).json({
       success: false,
-      message:("ffd" ,  error.message),
+      message: ("ffd", error.message),
     });
   }
 };
 
-export const getMe = async (req,res) => {
+export const getMe = async (req, res) => {
+  try {
+    // Find current logged in user
+    const user = await UserModel.findById(req.user.id).select("-password");
 
-    try {
-
-        // Find current logged in user
-        const user = await UserModel.findById(req.user.id).select("-password");
-       
-        // Check User
-    
-    } catch (error) {
-        
+    // Check User
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-
-}
+    res.status(200).json({
+      success: true,
+      data: user,
+    });
+  } catch (error) {
+     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
